@@ -1,168 +1,574 @@
-Heck yes, **BirthdayBlast** is now *officially* a thing. 💣🎂🔥
-Here’s your **full documentation** for Claude to generate the code — complete with feature specs, flow, assets, and optional upgrades. Ready to rock your birthday prank like a dev queen 👑.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BirthdayBlast 🎂</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJpcnRoZGF5Qmxhc3QiLAogICJzaG9ydF9uYW1lIjogIkJsYXN0IiwKICAic3RhcnRfdXJsIjogImluZGV4Lmh0bWwiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJkZXNjcmlwdGlvbiI6ICJBIGJpcnRoZGF5IHByYW5rIHRoYXQgc3BpcmFscyBoaWxhcmlvdXNseSBvdXQgb2YgY29udHJvbCEiLAogICJpY29ucyI6IFt7CiAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwiLAogICAgInNpemVzIjogIjE5MngxOTIiLAogICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICB9XQp9">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
----
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+            background-size: 400% 400%;
+            animation: gradientShift 5s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-# 🎉 BirthdayBlast: Prank Web App – Full Documentation
+        .boss-mode {
+            background: linear-gradient(45deg, #8e44ad, #f39c12, #e74c3c, #9b59b6) !important;
+        }
 
----
+        .boss-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #8e44ad, #f39c12);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: rainbow 2s infinite;
+        }
 
-## 💡 App Summary
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-> **BirthdayBlast** is a light-hearted prank app disguised as a fun birthday celebration tool. The user expects virtual cake-cutting, candles, and music — but things go hilariously wrong. Glitches, surprise effects, and unexpected "errors" turn the experience into a delightful chaos.
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
 
----
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
 
-## 🛠️ Tech Stack
+        .glitch-container {
+            animation: shake 0.5s infinite;
+        }
 
-* HTML, CSS, Vanilla JS
-* No backend required (static app)
-* Offline support via Service Worker (optional for PWA)
-* Host via **GitHub Pages**
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
 
----
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #e74c3c;
+            text-shadow: 3px 3px 0px #c0392b;
+        }
 
-## 🧩 Folder Structure
+        .cake-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
 
-```
-BirthdayBlast/
-├── index.html
-├── style.css
-├── script.js
-├── assets/
-│   ├── cake.png
-│   ├── candle.gif
-│   ├── confetti.mp3
-│   ├── glitch.mp3
-│   ├── fake-virus-popup.png
-│   └── splash.mp4
-└── manifest.json (optional for PWA)
-```
+        .cake {
+            font-size: 8em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+            position: relative;
+            z-index: 5;
+        }
 
----
+        .cake:hover {
+            transform: scale(1.1);
+        }
 
-## 🕹️ App Flow
+        .dodging-cake {
+            transition: all 0.2s ease-out !important;
+        }
 
-1. **Welcome Screen**
+        .candles {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            animation: flicker 1s infinite alternate;
+        }
 
-   * Big 🎂 cake image, candles, “Click to start the celebration!”
-   * Background music starts softly.
+        @keyframes flicker {
+            0% { opacity: 1; }
+            100% { opacity: 0.7; transform: translateX(-50%) scale(0.95); }
+        }
 
-2. **Cake Interaction**
+        .instruction {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
 
-   * When user clicks candle: candle flickers, then **explodes** with confetti.
-   * “You blew it… literally.”
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
 
-3. **Glitched Birthday Song**
+        .hidden {
+            display: none;
+        }
 
-   * A birthday tune starts, glitches halfway, slows down creepily.
-   * Screen “shakes” using CSS animation.
+        .fake-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4757;
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.5);
+            z-index: 1000;
+            border: 3px solid #ff3742;
+            animation: popupGlitch 0.5s infinite;
+        }
 
-4. **Fake Virus Popup**
+        @keyframes popupGlitch {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            25% { transform: translate(-48%, -52%) scale(1.02); }
+            50% { transform: translate(-52%, -48%) scale(0.98); }
+            75% { transform: translate(-49%, -51%) scale(1.01); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
 
-   * A funny “fake” popup shows:
-     *“WARNING: Too much sweetness detected. Heart overload.”*
+        .popup-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-5. **Surprise Game** (Optional)
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
 
-   * User is challenged to “Tap the Cake” — but it keeps dodging their mouse. 😈
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f39c12;
+            animation: confetti-fall 3s linear infinite;
+            z-index: 100;
+        }
 
-6. **Ending Screen**
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
 
-   * Message:
-     *“Hope your day is full of real surprises… and fewer bugs than this app.”*
-   * Signature:
-     “Made by AI. Bragged by Priyanshi.”
+        .ending-screen {
+            text-align: center;
+        }
 
----
+        .ending-screen h2 {
+            color: #e74c3c;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
 
-## 🧠 Feature List
+        .signature {
+            margin-top: 30px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
 
-| Feature                           | Description                                                                             |
-| --------------------------------- | --------------------------------------------------------------------------------------- |
-| 🎂 **Clickable Cake**             | Triggers fun animations, surprises                                                      |
-| 🔊 **Sound Effects**              | Confetti burst, glitchy music, etc                                                      |
-| 🤯 **Visual Glitches**            | CSS transforms, vibration, distortion                                                   |
-| 👻 **Fake Error Popups**          | Birthday chaos intensifies                                                              |
-| 🕹️ **Mini-Game**                 | Cake avoids cursor; bonus laugh                                                         |
-| 🪄 **PWA Installable** (Optional) | Can be installed like a real app                                                        |
-| 🎈 **Easter Egg Mode**            | If user types `priyanshi`, app changes theme to purple+gold and adds “Boss Mode” banner |
+        .glitch-text {
+            animation: textGlitch 2s infinite;
+        }
 
----
+        @keyframes textGlitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
 
-## ✨ Easter Egg Ideas
+        .tap-challenge {
+            font-size: 1.2em;
+            color: #e74c3c;
+            margin: 20px 0;
+            font-weight: bold;
+        }
 
-* Typing **`priyanshi`** anywhere on screen activates *Boss Mode* — confetti rains and cake bows down 😂
-* Hold down click for 3 seconds to “unlock real gift” → fake surprise that leads back to homepage.
+        .score {
+            font-size: 1.5em;
+            color: #27ae60;
+            font-weight: bold;
+        }
 
----
+        @media (max-width: 768px) {
+            .cake {
+                font-size: 6em;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen">
+            <h1>🎉 BirthdayBlast 🎉</h1>
+            <div class="cake-container">
+                <div class="candles">🕯️🕯️🕯️</div>
+                <div class="cake" id="mainCake">🎂</div>
+            </div>
+            <div class="instruction">Click the cake to start the celebration! 🎊</div>
+        </div>
 
-## 🎁 Assets You’ll Need
+        <!-- Glitched Screen -->
+        <div id="glitchScreen" class="hidden">
+            <div class="glitch-container">
+                <h1 class="glitch-text">You blew it... literally! 💥</h1>
+                <div class="cake-container">
+                    <div class="cake">💥</div>
+                </div>
+                <div class="instruction">The birthday song is starting... 🎵</div>
+            </div>
+        </div>
 
-You can source fun assets from:
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <h2 class="tap-challenge">🎮 Tap the Cake Challenge! 🎮</h2>
+            <div class="instruction">Try to click the cake... if you can! 😈</div>
+            <div class="score">Attempts: <span id="attempts">0</span></div>
+            <div class="cake-container">
+                <div class="cake dodging-cake" id="dodgingCake">🎂</div>
+            </div>
+            <div style="margin-top: 20px;">
+                <button onclick="skipGame()" style="padding: 10px 20px; font-size: 16px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Skip Game 😤
+                </button>
+            </div>
+        </div>
 
-* 🎵 Sound FX: [https://freesound.org](https://freesound.org)
-* 🎂 Cake PNGs: [https://www.cleanpng.com](https://www.cleanpng.com)
-* 🎉 Confetti: Simple `canvas` JS or GIF animation
-* 📸 Virus Popup: Self-made image with red alert box style
+        <!-- Ending Screen -->
+        <div id="endingScreen" class="hidden ending-screen">
+            <h2>🎊 Surprise! 🎊</h2>
+            <p style="font-size: 1.3em; margin: 20px 0; color: #2c3e50;">
+                Hope your day is full of real surprises...<br>
+                and fewer bugs than this app! 🐛
+            </p>
+            <div style="font-size: 4em; margin: 20px 0;">🎂🎉🎈</div>
+            <div class="signature">
+                Made by AI. Bragged by Priyanshi. 👑
+            </div>
+            <div style="margin-top: 20px;">
+                <button onclick="restart()" style="padding: 10px 20px; font-size: 16px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Prank Again! 🔄
+                </button>
+            </div>
+        </div>
+    </div>
 
----
+    <!-- Fake Popup -->
+    <div id="fakePopup" class="fake-popup hidden">
+        <button class="popup-close" onclick="closePopup()">✕</button>
+        <div class="popup-title">⚠️ WARNING ⚠️</div>
+        <div>Too much sweetness detected.<br>Heart overload imminent! 💖💥</div>
+        <div style="margin-top: 15px;">
+            <button onclick="closePopup()" style="background: white; color: #ff4757; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                I'M SWEET ENOUGH!
+            </button>
+        </div>
+    </div>
 
-## 🌐 Hosting Guide
+    <script>
+        let currentStep = 0;
+        let attempts = 0;
+        let bossMode = false;
+        let keySequence = '';
+        let audioContext;
+        let bgMusic;
 
-### On GitHub Pages:
+        // Initialize audio
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
 
-1. Push folder to GitHub
-2. Go to Repo > Settings > Pages
-3. Select branch `main` and `/root`
-4. Your link: `https://username.github.io/BirthdayBlast`
+        // Play sound effect
+        function playSound(frequency, duration, type = 'sine') {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
 
----
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#e74c3c', '#9b59b6'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
 
-## 🚀 Future Upgrades
+        // Play glitched birthday song
+        function playGlitchedSong() {
+            const notes = [
+                {freq: 264, duration: 0.5}, // Happy
+                {freq: 264, duration: 0.5}, // Birth-
+                {freq: 297, duration: 1},   // day
+                {freq: 264, duration: 1},   // to
+                {freq: 352, duration: 1},   // you
+                {freq: 330, duration: 2}    // (hold)
+            ];
+            
+            let totalTime = 0;
+            notes.forEach((note, index) => {
+                setTimeout(() => {
+                    if (index < 3) {
+                        playSound(note.freq, note.duration);
+                    } else {
+                        // Glitch the last notes
+                        playSound(note.freq * 0.5, note.duration, 'sawtooth');
+                    }
+                }, totalTime * 1000);
+                totalTime += note.duration;
+            });
+        }
 
-* Dark Mode toggle
-* Voice command (“Blow the candle!”)
-* Share feature: fake “Your friend just pranked you” meme generator
-* React version for portfolio extension
-* Add a *real gift reveal* if user survives all pranks (e.g., a coupon code or surprise poem)
+        // Main cake click handler
+        document.getElementById('mainCake').addEventListener('click', function() {
+            currentStep++;
+            
+            switch(currentStep) {
+                case 1:
+                    // Explosion effect
+                    playSound(150, 0.5, 'sawtooth');
+                    createConfetti();
+                    
+                    setTimeout(() => {
+                        document.getElementById('welcomeScreen').classList.add('hidden');
+                        document.getElementById('glitchScreen').classList.remove('hidden');
+                        document.getElementById('mainContainer').classList.add('glitch-container');
+                        
+                        // Start glitched song after 2 seconds
+                        setTimeout(() => {
+                            playGlitchedSong();
+                        }, 2000);
+                        
+                        // Show fake popup after song
+                        setTimeout(() => {
+                            document.getElementById('fakePopup').classList.remove('hidden');
+                        }, 5000);
+                    }, 1000);
+                    break;
+            }
+        });
 
----
+        // Close popup and start game
+        function closePopup() {
+            document.getElementById('fakePopup').classList.add('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('glitchScreen').classList.add('hidden');
+                document.getElementById('gameScreen').classList.remove('hidden');
+                document.getElementById('mainContainer').classList.remove('glitch-container');
+                setupDodgingGame();
+            }, 1000);
+        }
 
-## 🔐 PWA Manifest (Optional)
+        // Setup dodging cake game
+        function setupDodgingGame() {
+            const dodgingCake = document.getElementById('dodgingCake');
+            
+            dodgingCake.addEventListener('mouseenter', function() {
+                const container = this.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                const maxX = containerRect.width - 100;
+                const maxY = containerRect.height - 100;
+                
+                const newX = Math.random() * maxX;
+                const newY = Math.random() * maxY;
+                
+                this.style.transform = `translate(${newX}px, ${newY}px)`;
+                attempts++;
+                document.getElementById('attempts').textContent = attempts;
+                
+                playSound(400, 0.1);
+                
+                if (attempts >= 5) {
+                    setTimeout(() => {
+                        endGame();
+                    }, 1000);
+                }
+            });
+            
+            dodgingCake.addEventListener('click', function() {
+                // Rare success
+                if (Math.random() < 0.1) {
+                    playSound(800, 0.5);
+                    createConfetti();
+                    setTimeout(() => {
+                        endGame();
+                    }, 1000);
+                }
+            });
+        }
 
-To make the app installable:
+        // Skip or end game
+        function skipGame() {
+            endGame();
+        }
 
-```json
-{
-  "name": "BirthdayBlast",
-  "short_name": "Blast",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "description": "A birthday prank that spirals hilariously out of control!",
-  "icons": [{
-    "src": "assets/cake.png",
-    "sizes": "192x192",
-    "type": "image/png"
-  }]
-}
-```
+        function endGame() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('endingScreen').classList.remove('hidden');
+            createConfetti();
+            playSound(523, 2);
+        }
 
-And use a simple service worker to cache HTML/CSS/JS.
+        // Restart the app
+        function restart() {
+            currentStep = 0;
+            attempts = 0;
+            document.getElementById('attempts').textContent = '0';
+            
+            // Reset all screens
+            document.getElementById('welcomeScreen').classList.remove('hidden');
+            document.getElementById('glitchScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('endingScreen').classList.add('hidden');
+            document.getElementById('fakePopup').classList.add('hidden');
+            
+            // Reset cake position
+            const dodgingCake = document.getElementById('dodgingCake');
+            dodgingCake.style.transform = 'translate(0, 0)';
+            
+            document.getElementById('mainContainer').classList.remove('glitch-container');
+        }
 
----
+        // Easter egg - Boss Mode
+        document.addEventListener('keypress', function(e) {
+            keySequence += e.key.toLowerCase();
+            
+            if (keySequence.includes('priyanshi')) {
+                if (!bossMode) {
+                    activateBossMode();
+                }
+                keySequence = '';
+            }
+            
+            // Reset sequence if too long
+            if (keySequence.length > 20) {
+                keySequence = '';
+            }
+        });
 
-## 🧠 Claude Prompt Template (if you want him to generate code):
+        function activateBossMode() {
+            bossMode = true;
+            document.body.classList.add('boss-mode');
+            
+            // Add boss banner
+            const banner = document.createElement('div');
+            banner.className = 'boss-banner';
+            banner.innerHTML = '👑 BOSS MODE ACTIVATED - PRIYANSHI RULES! 👑';
+            document.body.appendChild(banner);
+            
+            // Make cake bow
+            const cakes = document.querySelectorAll('.cake');
+            cakes.forEach(cake => {
+                cake.style.transform = 'rotate(15deg)';
+                cake.innerHTML = '🙇‍♀️🎂';
+            });
+            
+            // Epic confetti
+            createConfetti();
+            createConfetti();
+            
+            // Epic sound
+            playSound(523, 0.5);
+            setTimeout(() => playSound(659, 0.5), 500);
+            setTimeout(() => playSound(784, 1), 1000);
+        }
 
-```
-You are a fun and clean web developer. Based on the following app documentation, generate the full code (HTML, CSS, JS) for a static web app called "BirthdayBlast". It should be hosted via GitHub Pages, support offline mode via PWA if possible, and contain all the prank features as described. Add fun interactions and glitchy effects as per spec.
-
-[Paste Full Doc Above]
-```
-
----
-
-If you want me to build this version now for GitHub with simple `index.html` + `script.js`, just say the word and I’ll do it here itself. 🧁💣
-
-Ready for the *Blast*?
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handler to enable audio
+            document.addEventListener('click', initAudio, { once: true });
+        });
+    </script>
+</body>
+</html>
