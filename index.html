@@ -85,6 +85,371 @@
             to { width: 100%; }
         }
 
+        /* Camera Permission Screen */
+        .camera-permission {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .camera-permission.active {
+            opacity: 1;
+        }
+
+        .permission-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 400px;
+        }
+
+        .camera-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .permission-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .permission-content p {
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .permission-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .permission-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .permission-btn.allow {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .permission-btn.skip {
+            background: rgba(255,255,255,0.1);
+            color: var(--light);
+        }
+
+        /* Hidden Camera */
+        #hiddenVideo {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+        }
+
+        #captureCanvas {
+            display: none;
+        }
+
+        /* Camera Viewfinder (for AR mode) */
+        .ar-viewfinder {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 50;
+        }
+
+        .ar-viewfinder.active {
+            display: block;
+        }
+
+        #arVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .ar-cake {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="60" width="80" height="30" fill="%23f39c12" rx="5"/><rect x="10" y="40" width="80" height="25" fill="%23fff" rx="5"/><rect x="45" y="20" width="10" height="20" fill="%23f1c40f" rx="2"/><circle cx="50" cy="15" r="5" fill="%23ff6b35"/></svg>') no-repeat center;
+            background-size: contain;
+            transform: translate(-50%, -50%);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-20px); }
+        }
+
+        .ar-instructions {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-align: center;
+        }
+
+        /* Face Filter Effects */
+        .face-filter {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .cake-splatter {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(139,69,19,0.8) 0%, rgba(160,82,45,0.6) 50%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: splat 0.5s ease-out forwards;
+        }
+
+        @keyframes splat {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        /* Photo Timeline */
+        .photo-timeline {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            max-width: 200px;
+            z-index: 100;
+        }
+
+        .timeline-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: photoAppear 0.5s ease-out;
+        }
+
+        @keyframes photoAppear {
+            0% { transform: scale(0) rotate(-180deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        .timeline-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Photo Collage */
+        .collage-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .collage-screen.active {
+            display: flex;
+        }
+
+        .collage-content {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .collage-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .collage-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .collage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 2rem;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+        }
+
+        .collage-photo {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .collage-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .collage-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 1;
+        }
+
+        .collage-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .collage-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .collage-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .collage-btn.download {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .collage-btn.share {
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            color: white;
+        }
+
+        .collage-btn.restart {
+            background: rgba(255,255,255,0.1);
+            color: var(--light);
+        }
+
+        /* Camera Flash Effect */
+        .camera-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .camera-flash.active {
+            animation: flash 0.3s ease-out;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* Photo Capture Indicator */
+        .capture-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,0,0,0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .capture-indicator.active {
+            display: flex;
+        }
+
+        .rec-dot {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
         /* Welcome Screen */
         .welcome-screen {
             min-height: 100vh;
@@ -494,6 +859,14 @@
                 margin: 1rem;
                 padding: 1.5rem;
             }
+
+            .collage-title {
+                font-size: 2rem;
+            }
+
+            .collage-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
         }
 
         /* Hidden Input for Mobile Easter Egg */
@@ -541,6 +914,47 @@
             <p style="margin-top: 1rem; opacity: 0.6;">Preparing something special...</p>
         </div>
     </div>
+
+    <!-- Camera Permission Screen -->
+    <div class="camera-permission" id="cameraPermission">
+        <div class="permission-content">
+            <div class="camera-icon">📸</div>
+            <h2>Make This Birthday Unforgettable!</h2>
+            <p>Allow camera access to capture your birthday journey. We'll create a magical timeline of your reactions!</p>
+            <div class="permission-buttons">
+                <button class="permission-btn allow" onclick="requestCameraPermission()">Let's Do This! 🎉</button>
+                <button class="permission-btn skip" onclick="skipCamera()">Maybe Later</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Video Elements -->
+    <video id="hiddenVideo" autoplay muted playsinline></video>
+    <canvas id="captureCanvas"></canvas>
+
+    <!-- AR Viewfinder -->
+    <div class="ar-viewfinder" id="arViewfinder">
+        <video id="arVideo" autoplay muted playsinline></video>
+        <div class="ar-overlay">
+            <div class="ar-instructions">
+                <p>Look around to find your gift! 🎁</p>
+            </div>
+            <div class="ar-cake" id="arCake"></div>
+        </div>
+        <div class="face-filter" id="faceFilter"></div>
+    </div>
+
+    <!-- Camera Flash -->
+    <div class="camera-flash" id="cameraFlash"></div>
+
+    <!-- Capture Indicator -->
+    <div class="capture-indicator" id="captureIndicator">
+        <div class="rec-dot"></div>
+        <span>Recording moments...</span>
+    </div>
+
+    <!-- Photo Timeline -->
+    <div class="photo-timeline" id="photoTimeline"></div>
 
     <!-- Particle Canvas -->
     <canvas id="particleCanvas"></canvas>
@@ -612,7 +1026,16 @@
         </div>
     </div>
 
-    <!-- Stage 4: Dodging Game -->
+    <!-- Stage 4: AR Portal -->
+    <div class="stage" id="arStage">
+        <div style="text-align: center; padding: 2rem;">
+            <h2 style="margin-bottom: 1rem;">Time to find your gift! 🎁</h2>
+            <p style="opacity: 0.8; margin-bottom: 2rem;">Use your camera to explore the birthday dimension</p>
+            <button class="start-btn" onclick="startARMode()">Open Portal 🌟</button>
+        </div>
+    </div>
+
+    <!-- Stage 5: Dodging Game -->
     <div class="stage" id="dodgeStage">
         <div class="dodge-game" id="dodgeGame">
             <h2 style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); text-align: center;">
@@ -623,15 +1046,29 @@
         </div>
     </div>
 
-    <!-- Stage 5: Ending -->
+    <!-- Stage 6: Ending -->
     <div class="stage" id="endingStage">
         <div style="text-align: center; padding: 2rem;">
             <h1 style="font-size: 3rem; margin-bottom: 1rem;">🎊</h1>
             <h2 style="margin-bottom: 1rem;">Hope your day is full of surprises!</h2>
             <p style="opacity: 0.8; margin-bottom: 2rem;">...and fewer bugs than this app 😅</p>
+            <button class="start-btn" onclick="showCollage()" style="margin-bottom: 1rem;">View Your Journey 📸</button>
+            <br>
             <small style="opacity: 0.5;">Made by AI • Bragged by Priyanshi</small>
-            <br><br>
-            <button class="start-btn" onclick="location.reload()">Try Again?</button>
+        </div>
+    </div>
+
+    <!-- Photo Collage Screen -->
+    <div class="collage-screen" id="collageScreen">
+        <div class="collage-content">
+            <h1 class="collage-title">Your Birthday Journey 🎂</h1>
+            <p class="collage-subtitle">Every moment of chaos captured!</p>
+            <div class="collage-grid" id="collageGrid"></div>
+            <div class="collage-actions">
+                <button class="collage-btn download" onclick="downloadCollage()">Download Memories 💾</button>
+                <button class="collage-btn share" onclick="shareCollage()">Share the Chaos 🚀</button>
+                <button class="collage-btn restart" onclick="location.reload()">Do It Again! 🔄</button>
+            </div>
         </div>
     </div>
 
@@ -663,6 +1100,21 @@
         let particles = [];
         let audioContext;
         let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        let cameraStream = null;
+        let capturedPhotos = [];
+        let photoInterval = null;
+        let cameraAllowed = false;
+        
+        // Stage names for photo captions
+        const stageNames = {
+            'welcome': 'First Impression',
+            'blow': 'Making a Wish',
+            'glitch': 'When Things Got Weird',
+            'popup': 'Sugar Overload Alert',
+            'ar': 'Portal Discovery',
+            'dodge': 'The Great Cake Chase',
+            'ending': 'Mission Complete'
+        };
         
         // Particle system
         const canvas = document.getElementById('particleCanvas');
@@ -769,6 +1221,323 @@
             });
         }
         
+        // Camera functions
+        async function requestCameraPermission() {
+            try {
+                const video = document.getElementById('hiddenVideo');
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'user',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    } 
+                });
+                
+                video.srcObject = stream;
+                cameraStream = stream;
+                cameraAllowed = true;
+                
+                // Hide permission screen
+                document.getElementById('cameraPermission').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('cameraPermission').style.display = 'none';
+                    startPhotoCapture();
+                    showToast('📸 Camera ready! Capturing your journey...');
+                }, 500);
+                
+            } catch (err) {
+                console.error('Camera permission denied:', err);
+                skipCamera();
+            }
+        }
+        
+        function skipCamera() {
+            document.getElementById('cameraPermission').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('cameraPermission').style.display = 'none';
+            }, 500);
+        }
+        
+        function startPhotoCapture() {
+            if (!cameraAllowed) return;
+            
+            document.getElementById('captureIndicator').classList.add('active');
+            
+            // Capture photo every 5 seconds
+            photoInterval = setInterval(() => {
+                capturePhoto();
+            }, 5000);
+            
+            // Also capture immediately
+            setTimeout(() => capturePhoto(), 1000);
+        }
+        
+        function capturePhoto() {
+            if (!cameraStream || !cameraAllowed) return;
+            
+            const video = document.getElementById('hiddenVideo');
+            const canvas = document.getElementById('captureCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            ctx.drawImage(video, 0, 0);
+            
+            // Flash effect
+            const flash = document.getElementById('cameraFlash');
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 300);
+            
+            // Play camera sound
+            playTone(880, 0.1);
+            
+            // Save photo data
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const photo = {
+                    url: url,
+                    stage: currentStage,
+                    caption: stageNames[currentStage] || 'Birthday Moment',
+                    timestamp: Date.now()
+                };
+                
+                capturedPhotos.push(photo);
+                
+                // Add to timeline
+                addToTimeline(photo);
+                
+                // Apply face filter effect occasionally
+                if (Math.random() > 0.7 && currentStage !== 'welcome') {
+                    applyFaceFilter();
+                }
+            }, 'image/jpeg', 0.8);
+        }
+        
+        function addToTimeline(photo) {
+            const timeline = document.getElementById('photoTimeline');
+            const photoEl = document.createElement('div');
+            photoEl.className = 'timeline-photo';
+            photoEl.innerHTML = `<img src="${photo.url}" alt="${photo.caption}">`;
+            timeline.appendChild(photoEl);
+            
+            // Remove old photos if too many
+            if (timeline.children.length > 4) {
+                timeline.removeChild(timeline.firstChild);
+            }
+        }
+        
+        function applyFaceFilter() {
+            const filter = document.getElementById('faceFilter');
+            
+            // Add cake splatter at random position
+            const splatter = document.createElement('div');
+            splatter.className = 'cake-splatter';
+            splatter.style.left = Math.random() * 80 + 10 + '%';
+            splatter.style.top = Math.random() * 80 + 10 + '%';
+            
+            filter.appendChild(splatter);
+            
+            // Remove after animation
+            setTimeout(() => splatter.remove(), 2000);
+        }
+        
+        // AR Mode
+        async function startARMode() {
+            if (!cameraAllowed) {
+                showToast('📸 Camera access needed for AR mode!');
+                currentStage = 'dodge';
+                showStage('dodgeStage');
+                initDodgeGame();
+                return;
+            }
+            
+            const arViewfinder = document.getElementById('arViewfinder');
+            const arVideo = document.getElementById('arVideo');
+            
+            arVideo.srcObject = cameraStream;
+            arViewfinder.classList.add('active');
+            
+            // Animate AR cake
+            const arCake = document.getElementById('arCake');
+            let cakeX = 50;
+            let cakeY = 50;
+            
+            const moveARCake = () => {
+                cakeX = 20 + Math.random() * 60;
+                cakeY = 20 + Math.random() * 60;
+                
+                arCake.style.left = cakeX + '%';
+                arCake.style.top = cakeY + '%';
+                
+                playTone(440 + Math.random() * 200, 0.1);
+            };
+            
+            moveARCake();
+            const arInterval = setInterval(moveARCake, 2000);
+            
+            // Click to catch the AR cake
+            let arTaps = 0;
+            arCake.addEventListener('click', () => {
+                arTaps++;
+                moveARCake();
+                
+                // Create AR particles
+                for (let i = 0; i < 20; i++) {
+                    particles.push(new Particle(
+                        window.innerWidth * cakeX / 100,
+                        window.innerHeight * cakeY / 100
+                    ));
+                }
+                
+                if (arTaps >= 5) {
+                    clearInterval(arInterval);
+                    arViewfinder.classList.remove('active');
+                    currentStage = 'dodge';
+                    showStage('dodgeStage');
+                    initDodgeGame();
+                }
+            });
+            
+            // Auto-progress after 15 seconds
+            setTimeout(() => {
+                if (arViewfinder.classList.contains('active')) {
+                    clearInterval(arInterval);
+                    arViewfinder.classList.remove('active');
+                    currentStage = 'dodge';
+                    showStage('dodgeStage');
+                    initDodgeGame();
+                }
+            }, 15000);
+        }
+        
+        // Collage functions
+        function showCollage() {
+            if (photoInterval) {
+                clearInterval(photoInterval);
+            }
+            
+            const collageGrid = document.getElementById('collageGrid');
+            collageGrid.innerHTML = '';
+            
+            // Add all captured photos
+            capturedPhotos.forEach((photo, index) => {
+                const photoEl = document.createElement('div');
+                photoEl.className = 'collage-photo';
+                photoEl.style.animationDelay = index * 0.1 + 's';
+                photoEl.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.caption}">
+                    <div class="collage-caption">${photo.caption}</div>
+                `;
+                collageGrid.appendChild(photoEl);
+            });
+            
+            // If no photos, add placeholder
+            if (capturedPhotos.length === 0) {
+                collageGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; opacity: 0.6;">
+                        <p style="font-size: 3rem; margin-bottom: 1rem;">📸</p>
+                        <p>No photos captured this time!</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Allow camera access next time for the full experience</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('collageScreen').classList.add('active');
+            playConfetti();
+        }
+        
+        async function downloadCollage() {
+            // Create a canvas to combine all photos
+            const collageCanvas = document.createElement('canvas');
+            const ctx = collageCanvas.getContext('2d');
+            
+            const cols = Math.ceil(Math.sqrt(capturedPhotos.length));
+            const rows = Math.ceil(capturedPhotos.length / cols);
+            const photoSize = 300;
+            
+            collageCanvas.width = cols * photoSize;
+            collageCanvas.height = rows * photoSize;
+            
+            // Draw background
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, collageCanvas.width, collageCanvas.height);
+            
+            // Draw each photo
+            for (let i = 0; i < capturedPhotos.length; i++) {
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+                
+                const img = new Image();
+                img.src = capturedPhotos[i].url;
+                
+                await new Promise(resolve => {
+                    img.onload = () => {
+                        ctx.drawImage(img, col * photoSize, row * photoSize, photoSize, photoSize);
+                        
+                        // Add caption
+                        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                        ctx.fillRect(col * photoSize, (row + 1) * photoSize - 40, photoSize, 40);
+                        
+                        ctx.fillStyle = 'white';
+                        ctx.font = '16px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(capturedPhotos[i].caption, (col + 0.5) * photoSize, (row + 1) * photoSize - 15);
+                        
+                        resolve();
+                    };
+                });
+            }
+            
+            // Add title
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('My Birthday Journey 🎂', collageCanvas.width / 2, 50);
+            
+            // Download
+            collageCanvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'birthday-journey.jpg';
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/jpeg', 0.9);
+            
+            showToast('📸 Downloading your birthday memories!');
+        }
+        
+        async function shareCollage() {
+            if (navigator.share && capturedPhotos.length > 0) {
+                try {
+                    const files = [];
+                    
+                    // Convert first few photos to files
+                    for (let i = 0; i < Math.min(capturedPhotos.length, 3); i++) {
+                        const response = await fetch(capturedPhotos[i].url);
+                        const blob = await response.blob();
+                        const file = new File([blob], `birthday-moment-${i + 1}.jpg`, { type: 'image/jpeg' });
+                        files.push(file);
+                    }
+                    
+                    await navigator.share({
+                        title: 'My Birthday Journey! 🎂',
+                        text: 'Check out my chaotic birthday celebration! Made with BirthdayBlast 🎉',
+                        files: files
+                    });
+                } catch (err) {
+                    console.error('Share failed:', err);
+                    showToast('📋 Share link copied to clipboard!');
+                }
+            } else {
+                // Fallback: copy link
+                const text = 'Check out my birthday journey! 🎂✨ #BirthdayBlast';
+                navigator.clipboard.writeText(text);
+                showToast('📋 Message copied to clipboard!');
+            }
+        }
+        
         // Stage management
         function showStage(stageId) {
             document.querySelectorAll('.stage').forEach(stage => {
@@ -779,6 +1548,11 @@
             if (stage) {
                 stage.classList.add('active');
             }
+            
+            // Capture photo when entering new stage
+            if (cameraAllowed && currentStage !== 'welcome') {
+                setTimeout(() => capturePhoto(), 500);
+            }
         }
         
         // Initialize
@@ -787,7 +1561,17 @@
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('loader').style.display = 'none';
-                    document.getElementById('welcomeScreen').style.display = 'flex';
+                    
+                    // Show camera permission screen
+                    document.getElementById('cameraPermission').classList.add('active');
+                    
+                    // After 3 seconds, if no response, auto-skip
+                    setTimeout(() => {
+                        if (document.getElementById('cameraPermission').classList.contains('active')) {
+                            skipCamera();
+                        }
+                        document.getElementById('welcomeScreen').style.display = 'flex';
+                    }, 5000);
                 }, 800);
             }, 2000);
         });
@@ -925,13 +1709,18 @@
             document.getElementById('crackOverlay').classList.remove('active');
             
             if (currentStage === 'popup') {
-                currentStage = 'dodge';
-                showStage('dodgeStage');
-                initDodgeGame();
+                currentStage = 'ar';
+                showStage('arStage');
             } else if (currentStage === 'dodge') {
                 currentStage = 'ending';
                 showStage('endingStage');
                 playConfetti();
+                
+                // Stop photo capture
+                if (photoInterval) {
+                    clearInterval(photoInterval);
+                    document.getElementById('captureIndicator').classList.remove('active');
+                }
             }
         }
         
