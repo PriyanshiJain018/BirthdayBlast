@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1a1a2e">
-    <title>BirthdayBlast - Make Your Day Special</title>
+    <title>Happy Birthday! 🎉</title>
     
     <style>
         * {
@@ -19,6 +19,8 @@
             --dark: #1a1a2e;
             --light: #eee;
             --accent: #9b59b6;
+            --error: #ff0000;
+            --warning: #ffaa00;
         }
 
         body {
@@ -26,9 +28,75 @@
             background: var(--dark);
             color: var(--light);
             overflow-x: hidden;
-            touch-action: manipulation;
             min-height: 100vh;
             position: relative;
+            cursor: auto; /* Changed from none to auto */
+        }
+
+        /* Cursor Effects */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, var(--primary), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: screen;
+            transition: transform 0.1s ease;
+        }
+
+        body.cursor-disabled {
+            cursor: none;
+        }
+
+        /* Screen Crack Effect */
+        .screen-crack {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 30 L80 70 M30 20 L70 80 M10 50 L90 50 M50 10 L50 90 M25 75 L75 25" stroke="black" stroke-width="0.5" fill="none" opacity="0.8"/></svg>') repeat;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .screen-crack.active {
+            opacity: 1;
+        }
+
+        /* Glitch Effects */
+        .glitch-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .glitch-screen.active {
+            opacity: 1;
+            animation: screen-glitch 0.1s infinite;
+        }
+
+        @keyframes screen-glitch {
+            0%, 100% { transform: translate(0); filter: hue-rotate(0deg); }
+            10% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+            20% { transform: translate(-2px, -2px); filter: hue-rotate(180deg); }
+            30% { transform: translate(2px, 2px); filter: hue-rotate(270deg); }
+            40% { transform: translate(2px, -2px); filter: hue-rotate(360deg); }
+            50% { transform: translate(-1px, 1px); filter: invert(1); }
+            60% { transform: translate(-1px, -1px); filter: invert(0); }
+            70% { transform: translate(1px, 1px); filter: hue-rotate(45deg); }
+            80% { transform: translate(1px, -1px); filter: hue-rotate(135deg); }
+            90% { transform: translate(0, 1px); filter: hue-rotate(225deg); }
         }
 
         /* Loading Screen */
@@ -38,442 +106,84 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--dark);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.8s ease;
+            transition: opacity 1s ease;
         }
 
         .loader-content {
             text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         .loader h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 2rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: glow 2s ease-in-out infinite;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        @keyframes glow {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        .birthday-cake {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .progress-bar {
-            width: 200px;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
+            width: 300px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
             overflow: hidden;
-            margin: 0 auto;
+            margin: 2rem auto;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: linear-gradient(90deg, #fff, rgba(255,255,255,0.8));
             width: 0%;
-            animation: load 2s ease forwards;
+            animation: load 3s ease forwards;
+            border-radius: 4px;
         }
 
         @keyframes load {
             to { width: 100%; }
         }
 
-        /* Camera Permission Screen */
-        .camera-permission {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9998;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .camera-permission.active {
-            opacity: 1;
-        }
-
-        .permission-content {
-            text-align: center;
-            padding: 2rem;
-            max-width: 400px;
-        }
-
-        .camera-icon {
-            font-size: 4rem;
-            margin-bottom: 2rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .permission-content h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .permission-content p {
-            opacity: 0.8;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .permission-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .permission-btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .permission-btn.allow {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        .permission-btn.skip {
-            background: rgba(255,255,255,0.1);
-            color: var(--light);
-        }
-
-        /* Hidden Camera */
-        #hiddenVideo {
-            position: fixed;
-            top: -9999px;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-        }
-
-        #captureCanvas {
-            display: none;
-        }
-
-        /* Camera Viewfinder (for AR mode) */
-        .ar-viewfinder {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            z-index: 50;
-        }
-
-        .ar-viewfinder.active {
-            display: block;
-        }
-
-        #arVideo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .ar-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .ar-cake {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="60" width="80" height="30" fill="%23f39c12" rx="5"/><rect x="10" y="40" width="80" height="25" fill="%23fff" rx="5"/><rect x="45" y="20" width="10" height="20" fill="%23f1c40f" rx="2"/><circle cx="50" cy="15" r="5" fill="%23ff6b35"/></svg>') no-repeat center;
-            background-size: contain;
-            transform: translate(-50%, -50%);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-            50% { transform: translate(-50%, -50%) translateY(-20px); }
-        }
-
-        .ar-instructions {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-align: center;
-        }
-
-        /* Face Filter Effects */
-        .face-filter {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .cake-splatter {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, rgba(139,69,19,0.8) 0%, rgba(160,82,45,0.6) 50%, transparent 70%);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: splat 0.5s ease-out forwards;
-        }
-
-        @keyframes splat {
-            0% { transform: scale(0) rotate(0deg); }
-            50% { transform: scale(1.2) rotate(180deg); }
-            100% { transform: scale(1) rotate(360deg); }
-        }
-
-        /* Photo Timeline */
-        .photo-timeline {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            max-width: 200px;
-            z-index: 100;
-        }
-
-        .timeline-photo {
-            width: 40px;
-            height: 40px;
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            animation: photoAppear 0.5s ease-out;
-        }
-
-        @keyframes photoAppear {
-            0% { transform: scale(0) rotate(-180deg); }
-            100% { transform: scale(1) rotate(0); }
-        }
-
-        .timeline-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Photo Collage */
-        .collage-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            overflow-y: auto;
-            padding: 2rem;
-        }
-
-        .collage-screen.active {
-            display: flex;
-        }
-
-        .collage-content {
-            text-align: center;
-            max-width: 800px;
-            width: 100%;
-        }
-
-        .collage-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .collage-subtitle {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            margin-bottom: 2rem;
-        }
-
-        .collage-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-bottom: 2rem;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-        }
-
-        .collage-photo {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-
-        .collage-photo:hover {
-            transform: scale(1.05);
-        }
-
-        .collage-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            aspect-ratio: 1;
-        }
-
-        .collage-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: white;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .collage-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .collage-btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .collage-btn.download {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        .collage-btn.share {
-            background: linear-gradient(45deg, var(--accent), var(--secondary));
-            color: white;
-        }
-
-        .collage-btn.restart {
-            background: rgba(255,255,255,0.1);
-            color: var(--light);
-        }
-
-        /* Camera Flash Effect */
-        .camera-flash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        .camera-flash.active {
-            animation: flash 0.3s ease-out;
-        }
-
-        @keyframes flash {
-            0% { opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0; }
-        }
-
-        /* Photo Capture Indicator */
-        .capture-indicator {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255,0,0,0.8);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 1000;
-            animation: blink 1s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .capture-indicator.active {
-            display: flex;
-        }
-
-        .rec-dot {
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            animation: pulse 1s ease-in-out infinite;
-        }
-
         /* Welcome Screen */
         .welcome-screen {
             min-height: 100vh;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 2rem;
+            background: linear-gradient(135deg, var(--dark) 0%, #2c3e50 100%);
             opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease forwards;
-            animation-delay: 0.5s;
+            transition: all 1s ease;
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .welcome-content {
-            text-align: center;
-            max-width: 500px;
+        .welcome-screen.active {
+            display: flex;
+            opacity: 1;
         }
 
         .cake-container {
@@ -486,7 +196,7 @@
         }
 
         .cake-container:hover {
-            transform: scale(1.05);
+            transform: scale(1.05) rotate(2deg);
         }
 
         .cake {
@@ -560,12 +270,14 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-align: center;
         }
 
         .welcome-text p {
             font-size: 1.2rem;
             opacity: 0.8;
             margin-bottom: 2rem;
+            text-align: center;
         }
 
         .start-btn {
@@ -580,6 +292,8 @@
             box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
             position: relative;
             overflow: hidden;
+            z-index: 1000;
+            pointer-events: auto;
         }
 
         .start-btn:hover {
@@ -587,25 +301,12 @@
             box-shadow: 0 15px 40px rgba(243, 156, 18, 0.4);
         }
 
-        .start-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+        .start-btn:active {
+            transform: translateY(0px);
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.3);
         }
 
-        .start-btn:active::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        /* Game Stages */
+        /* Stages */
         .stage {
             position: fixed;
             top: 0;
@@ -617,222 +318,249 @@
             align-items: center;
             z-index: 100;
             background: var(--dark);
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .stage.active {
             display: flex;
+            opacity: 1;
         }
 
-        /* Candle Blow Stage */
-        .blow-instruction {
-            text-align: center;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .blow-instruction h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .blow-meter {
-            width: 300px;
-            height: 30px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            margin: 2rem auto;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .blow-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #27ae60, #2ecc71);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        /* Glitch Effects */
-        .glitch {
-            animation: glitch 0.3s ease-in-out;
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-        }
-
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .glitch-text::before {
-            animation: glitch-1 0.5s infinite;
-            color: #ff00ff;
-            z-index: -1;
-        }
-
-        .glitch-text::after {
-            animation: glitch-2 0.5s infinite;
-            color: #00ffff;
-            z-index: -2;
-        }
-
-        @keyframes glitch-1 {
-            0%, 100% { clip: rect(0, 900px, 0, 0); }
-            25% { clip: rect(random(100)px, 900px, random(100)px, 0); }
-            50% { clip: rect(random(100)px, 900px, random(100)px, 0); }
-            75% { clip: rect(random(100)px, 900px, random(100)px, 0); }
-        }
-
-        /* Fake Popup */
-        .fake-popup {
-            background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+        /* Fake System Alerts */
+        .fake-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            color: #000;
             padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(255, 8, 68, 0.4);
-            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 500px;
             text-align: center;
-            animation: shake 0.5s ease-in-out;
-            position: relative;
+            z-index: 10000;
+            border: 3px solid var(--error);
+        }
+
+        .fake-alert h2 {
+            color: var(--error);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .fake-alert .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: shake 0.5s ease-in-out infinite;
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
-        .popup-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: spin 1s ease-in-out;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg) scale(0); }
-            50% { transform: rotate(180deg) scale(1.2); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-
-        /* Dodging Cake Game */
-        .dodge-game {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            cursor: crosshair;
-        }
-
-        .dodging-cake {
-            width: 100px;
-            height: 100px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="60" width="80" height="30" fill="%23f39c12" rx="5"/><rect x="10" y="40" width="80" height="25" fill="%23fff" rx="5"/><rect x="45" y="20" width="10" height="20" fill="%23f1c40f" rx="2"/><circle cx="50" cy="15" r="5" fill="%23ff6b35"/></svg>') no-repeat center;
-            background-size: contain;
-            position: absolute;
-            transition: all 0.2s ease-out;
+        .alert-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
             cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
         }
 
-        /* Boss Mode */
-        .boss-mode {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #9b59b6, #f39c12);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+        .alert-btn:hover {
+            background: #cc0000;
         }
 
-        .boss-mode.active {
+        /* Fake Terminal */
+        .fake-terminal {
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #333;
+        }
+
+        .terminal-header {
+            background: #333;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            margin: -2rem -2rem 1rem -2rem;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.9rem;
+        }
+
+        .terminal-line {
+            margin: 0.5rem 0;
+            opacity: 0;
+            animation: type-in 0.1s ease forwards;
+        }
+
+        @keyframes type-in {
+            to { opacity: 1; }
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Fake Video Call */
+        .fake-video-call {
+            background: #000;
+            border-radius: 15px;
+            padding: 1rem;
+            max-width: 400px;
+            position: relative;
+            border: 3px solid #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .call-header {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #00ff00;
+        }
+
+        .call-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .call-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .call-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .call-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .call-btn.decline {
+            background: var(--error);
+            color: white;
+        }
+
+        .call-btn.accept {
+            background: #00ff00;
+            color: black;
+        }
+
+        /* Typing Effect */
+        .typing-text {
+            border-right: 2px solid var(--primary);
+            animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--primary); }
+        }
+
+        /* Final Celebration */
+        .celebration {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .celebration h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             animation: rainbow 3s ease-in-out infinite;
         }
 
         @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        /* Confetti */
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--primary);
-            position: absolute;
-            animation: confetti-fall 3s ease-in-out;
-        }
-
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        /* Voice Input Button */
-        .voice-input {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, var(--accent), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .gift-box {
+            font-size: 4rem;
+            margin: 2rem 0;
+            animation: bounce 2s ease-in-out infinite;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(155, 89, 182, 0.4);
-            transition: all 0.3s ease;
-            z-index: 1000;
         }
 
-        .voice-input:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 40px rgba(155, 89, 182, 0.5);
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        .voice-input.listening {
-            animation: pulse 1s ease-in-out infinite;
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        .birthday-message {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 2s;
         }
 
-        /* Particle Canvas */
-        #particleCanvas {
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Confetti Canvas */
+        #confettiCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1;
+            z-index: 1000;
         }
 
         /* Mobile Optimizations */
@@ -851,117 +579,156 @@
                 height: 160px;
             }
             
-            .blow-meter {
-                width: 250px;
+            .fake-alert {
+                margin: 1rem;
+                max-width: calc(100% - 2rem);
             }
             
-            .fake-popup {
+            .fake-terminal {
                 margin: 1rem;
-                padding: 1.5rem;
+                max-width: calc(100% - 2rem);
             }
-
-            .collage-title {
+            
+            .celebration h1 {
                 font-size: 2rem;
             }
-
-            .collage-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            }
         }
 
-        /* Hidden Input for Mobile Easter Egg */
-        .secret-input {
+        /* Webcam Fake Indicator */
+        .webcam-indicator {
             position: fixed;
-            bottom: -100px;
-            left: 0;
-            opacity: 0;
-            pointer-events: none;
+            top: 20px;
+            right: 20px;
+            background: var(--error);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 10001;
+            animation: pulse 1s ease-in-out infinite;
         }
 
-        /* Screen Crack Effect */
-        .crack-overlay {
+        .webcam-indicator.active {
+            display: flex;
+        }
+
+        .rec-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        /* Browser Hijack Effect */
+        .browser-hijack {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 0 L45 30 L20 50 L45 70 L50 100 M50 0 L55 30 L80 50 L55 70 L50 100" stroke="%23000" stroke-width="0.5" fill="none" opacity="0.3"/></svg>') no-repeat center;
-            background-size: cover;
-            pointer-events: none;
+            height: 40px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ccc;
             display: none;
-            z-index: 9998;
+            align-items: center;
+            padding: 0 1rem;
+            font-family: Arial, sans-serif;
+            font-size: 0.9rem;
+            color: #333;
+            z-index: 10002;
         }
 
-        .crack-overlay.active {
-            display: block;
-            animation: crack-appear 0.5s ease-out;
+        .browser-hijack.active {
+            display: flex;
         }
 
-        @keyframes crack-appear {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
+        .address-bar {
+            flex: 1;
+            background: white;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin: 0 1rem;
+        }
+
+        /* Auto-typing in fake inputs */
+        .fake-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: var(--dark);
+            color: var(--light);
+            margin: 1rem 0;
+        }
+
+        .fake-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+        }
+
+        /* System notification */
+        .system-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            color: black;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            max-width: 300px;
+            z-index: 10003;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .system-notification.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification-header {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
     </style>
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+
+    <!-- Screen Effects -->
+    <div class="screen-crack" id="screenCrack"></div>
+    <div class="glitch-screen" id="glitchScreen"></div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confettiCanvas"></canvas>
+
     <!-- Loading Screen -->
     <div class="loader" id="loader">
         <div class="loader-content">
-            <h1>BirthdayBlast</h1>
+            <div class="birthday-cake">🎂</div>
+            <h1>Preparing Your Special Day!</h1>
             <div class="progress-bar">
                 <div class="progress-fill"></div>
             </div>
-            <p style="margin-top: 1rem; opacity: 0.6;">Preparing something special...</p>
+            <p style="margin-top: 1rem; opacity: 0.8;">Loading birthday magic...</p>
         </div>
     </div>
-
-    <!-- Camera Permission Screen -->
-    <div class="camera-permission" id="cameraPermission">
-        <div class="permission-content">
-            <div class="camera-icon">📸</div>
-            <h2>Make This Birthday Unforgettable!</h2>
-            <p>Allow camera access to capture your birthday journey. We'll create a magical timeline of your reactions!</p>
-            <div class="permission-buttons">
-                <button class="permission-btn allow" onclick="requestCameraPermission()">Let's Do This! 🎉</button>
-                <button class="permission-btn skip" onclick="skipCamera()">Maybe Later</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hidden Video Elements -->
-    <video id="hiddenVideo" autoplay muted playsinline></video>
-    <canvas id="captureCanvas"></canvas>
-
-    <!-- AR Viewfinder -->
-    <div class="ar-viewfinder" id="arViewfinder">
-        <video id="arVideo" autoplay muted playsinline></video>
-        <div class="ar-overlay">
-            <div class="ar-instructions">
-                <p>Look around to find your gift! 🎁</p>
-            </div>
-            <div class="ar-cake" id="arCake"></div>
-        </div>
-        <div class="face-filter" id="faceFilter"></div>
-    </div>
-
-    <!-- Camera Flash -->
-    <div class="camera-flash" id="cameraFlash"></div>
-
-    <!-- Capture Indicator -->
-    <div class="capture-indicator" id="captureIndicator">
-        <div class="rec-dot"></div>
-        <span>Recording moments...</span>
-    </div>
-
-    <!-- Photo Timeline -->
-    <div class="photo-timeline" id="photoTimeline"></div>
-
-    <!-- Particle Canvas -->
-    <canvas id="particleCanvas"></canvas>
 
     <!-- Welcome Screen -->
-    <div class="welcome-screen" id="welcomeScreen" style="display: none;">
-        <div class="welcome-content">
+    <div class="welcome-screen" id="welcomeScreen">
+        <div style="max-width: 600px;">
             <div class="cake-container" id="cakeContainer">
                 <div class="candles">
                     <div class="candle">
@@ -977,187 +744,522 @@
                 <div class="cake"></div>
             </div>
             <div class="welcome-text">
-                <h1>Happy Birthday!</h1>
-                <p>Today is your special day. Let's celebrate!</p>
-                <button class="start-btn" id="startBtn">Start Celebration 🎉</button>
+                <h1>🎉 Happy Birthday! 🎉</h1>
+                <p>We've prepared something very special for you today! Click below to start your personalized birthday experience.</p>
+                <button class="start-btn" id="startBtn" onclick="startPrank()">Start My Birthday Surprise! 🎁</button>
+                <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 1rem;">
+                    Button not working? Try: Double-click anywhere or press SPACEBAR
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Stage 1: Blow Candles -->
+    <!-- Stage 1: Blow Candles (Normal) -->
     <div class="stage" id="blowStage">
-        <div class="blow-instruction">
-            <h2>Make a wish and blow the candles! 🕯️</h2>
-            <p>Touch and hold the screen (or press spacebar)</p>
-            <div class="blow-meter">
-                <div class="blow-fill" id="blowFill"></div>
-            </div>
+        <div style="text-align: center;">
+            <h2 style="font-size: 2rem; margin-bottom: 2rem;">Make a wish and blow the candles! 🕯️</h2>
+            <p style="margin-bottom: 2rem; opacity: 0.8;">Click and hold the candles to blow them out</p>
             <div class="cake-container">
-                <div class="candles" id="candlesStage">
-                    <div class="candle">
+                <div class="candles" id="interactiveCandles">
+                    <div class="candle" data-candle="0">
                         <div class="flame"></div>
                     </div>
-                    <div class="candle">
+                    <div class="candle" data-candle="1">
                         <div class="flame"></div>
                     </div>
-                    <div class="candle">
+                    <div class="candle" data-candle="2">
                         <div class="flame"></div>
                     </div>
                 </div>
                 <div class="cake"></div>
             </div>
+            <p style="margin-top: 2rem;">Candles remaining: <span id="candleCount" style="color: var(--primary); font-size: 1.2rem;">3</span></p>
         </div>
     </div>
 
-    <!-- Stage 2: Glitch -->
-    <div class="stage" id="glitchStage">
-        <h1 class="glitch-text" data-text="HAPPY BIRTHDAY!">HAPPY BIRTHDAY!</h1>
-    </div>
-
-    <!-- Stage 3: Fake Popup -->
-    <div class="stage" id="popupStage">
-        <div class="fake-popup">
-            <div class="popup-icon">⚠️</div>
-            <h2>WARNING!</h2>
-            <p>Sweetness overload detected! 🍰</p>
-            <p>System sugar levels: <span style="color: #2ecc71">9001%</span></p>
-            <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 1rem;">Heart.exe has stopped responding</p>
-            <button class="start-btn" style="margin-top: 1rem;" onclick="nextStage()">Proceed anyway</button>
+    <!-- Stage 2: Fake System Error -->
+    <div class="stage" id="errorStage">
+        <div class="fake-alert" id="fakeAlert">
+            <div class="icon">⚠️</div>
+            <h2>SYSTEM ERROR!</h2>
+            <p style="margin-bottom: 1rem;">Your birthday celebration has caused a critical system malfunction!</p>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 2rem;">Error Code: BDAY_OVERFLOW_2024</p>
+            <p style="color: var(--error); font-weight: bold; margin-bottom: 2rem;">All your photos are being uploaded to social media...</p>
+            <button class="alert-btn" onclick="nextStage()">PANIC! 😱</button>
+            <button class="alert-btn" onclick="nextStage()">Oh no! 😰</button>
         </div>
     </div>
 
-    <!-- Stage 4: AR Portal -->
-    <div class="stage" id="arStage">
-        <div style="text-align: center; padding: 2rem;">
-            <h2 style="margin-bottom: 1rem;">Time to find your gift! 🎁</h2>
-            <p style="opacity: 0.8; margin-bottom: 2rem;">Use your camera to explore the birthday dimension</p>
-            <button class="start-btn" onclick="startARMode()">Open Portal 🌟</button>
-        </div>
-    </div>
-
-    <!-- Stage 5: Dodging Game -->
-    <div class="stage" id="dodgeStage">
-        <div class="dodge-game" id="dodgeGame">
-            <h2 style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); text-align: center;">
-                Catch the cake! 🎂<br>
-                <small style="opacity: 0.6;">Taps: <span id="tapCount">0</span></small>
-            </h2>
-            <div class="dodging-cake" id="dodgingCake"></div>
-        </div>
-    </div>
-
-    <!-- Stage 6: Ending -->
-    <div class="stage" id="endingStage">
-        <div style="text-align: center; padding: 2rem;">
-            <h1 style="font-size: 3rem; margin-bottom: 1rem;">🎊</h1>
-            <h2 style="margin-bottom: 1rem;">Hope your day is full of surprises!</h2>
-            <p style="opacity: 0.8; margin-bottom: 2rem;">...and fewer bugs than this app 😅</p>
-            <button class="start-btn" onclick="showCollage()" style="margin-bottom: 1rem;">View Your Journey 📸</button>
-            <br>
-            <small style="opacity: 0.5;">Made by AI • Bragged by Priyanshi</small>
-        </div>
-    </div>
-
-    <!-- Photo Collage Screen -->
-    <div class="collage-screen" id="collageScreen">
-        <div class="collage-content">
-            <h1 class="collage-title">Your Birthday Journey 🎂</h1>
-            <p class="collage-subtitle">Every moment of chaos captured!</p>
-            <div class="collage-grid" id="collageGrid"></div>
-            <div class="collage-actions">
-                <button class="collage-btn download" onclick="downloadCollage()">Download Memories 💾</button>
-                <button class="collage-btn share" onclick="shareCollage()">Share the Chaos 🚀</button>
-                <button class="collage-btn restart" onclick="location.reload()">Do It Again! 🔄</button>
+    <!-- Stage 3: Fake Hacking -->
+    <div class="stage" id="hackStage">
+        <div class="fake-terminal">
+            <div class="terminal-header">
+                🔴 LIVE - Accessing Personal Data...
+            </div>
+            <div id="hackingText">
+                <div class="terminal-line">root@birthday-hacker:~$ whoami</div>
+                <div class="terminal-line">definitely_not_a_hacker</div>
+                <div class="terminal-line">root@birthday-hacker:~$ accessing_birthday_person_data.exe</div>
+                <div class="terminal-line">Scanning browser history... 📱</div>
+                <div class="terminal-line">Found: 2,847 cat videos</div>
+                <div class="terminal-line">Found: 156 "how to be an adult" searches</div>
+                <div class="terminal-line">Found: 1,293 pizza delivery orders</div>
+                <div class="terminal-line">Accessing camera feed... 📷</div>
+                <div class="terminal-line" style="color: var(--error);">ERROR: Subject too beautiful, camera malfunctioned</div>
+                <div class="terminal-line">Attempting to post embarrassing status...</div>
+                <div class="terminal-line">Status: "Just turned another year older and still don't know what I'm doing! 🎂"</div>
+                <div class="terminal-line">Posting in 3... 2... 1...</div>
+                <div class="terminal-line" style="color: var(--warning);">JUST KIDDING! 😂<span class="cursor">|</span></div>
             </div>
         </div>
     </div>
 
-    <!-- Boss Mode -->
-    <div class="boss-mode" id="bossMode">
-        <div style="text-align: center;">
-            <h1 style="font-size: 4rem; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">👑 BOSS MODE ACTIVATED 👑</h1>
-            <p style="font-size: 1.5rem; color: white; margin-top: 1rem;">The cake bows to your greatness!</p>
+    <!-- Stage 4: Fake Video Call -->
+    <div class="stage" id="callStage">
+        <div class="fake-video-call">
+            <div class="call-header">
+                <span>📞 Incoming Call</span>
+                <span style="color: var(--error);">LIVE</span>
+            </div>
+            <div class="call-avatar">🤖</div>
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <h3 style="color: var(--primary);">Birthday Bot</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8;">Calling to sing Happy Birthday...</p>
+                <p style="font-size: 0.8rem; color: var(--error); margin-top: 0.5rem;">⚠️ This call is being recorded for "quality assurance"</p>
+            </div>
+            <div class="call-controls">
+                <button class="call-btn decline" onclick="nextStage()">❌</button>
+                <button class="call-btn accept" onclick="nextStage()">📞</button>
+            </div>
+            <p style="text-align: center; font-size: 0.8rem; margin-top: 1rem; opacity: 0.6;">
+                Answer to continue... or decline if you're too shy! 😏
+            </p>
         </div>
     </div>
 
-    <!-- Voice Input Button -->
-    <div class="voice-input" id="voiceBtn" title="Voice command">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-            <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
-            <path d="M17 11a5 5 0 0 1-10 0h-1a6 6 0 0 0 5.5 6v2.5h-3v1h7v-1h-3V17a6 6 0 0 0 5.5-6z"/>
-        </svg>
+    <!-- Stage 5: Auto-typing Embarrassing Things -->
+    <div class="stage" id="typingStage">
+        <div style="text-align: center; max-width: 500px;">
+            <h2 style="margin-bottom: 2rem; color: var(--error);">OH NO! The keyboard is possessed! 👻</h2>
+            <p style="margin-bottom: 2rem; opacity: 0.8;">It's typing embarrassing things about you...</p>
+            
+            <div style="background: var(--dark); padding: 2rem; border-radius: 15px; border: 2px solid var(--primary);">
+                <h3 style="margin-bottom: 1rem;">Social Media Post Generator</h3>
+                <textarea class="fake-input" id="autoTypeArea" placeholder="AI is typing..." readonly></textarea>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="alert-btn" style="background: var(--primary);" onclick="nextStage()">STOP IT! 😤</button>
+                    <button class="alert-btn" style="background: var(--secondary);" onclick="nextStage()">HELP! 🆘</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Hidden input for mobile -->
-    <input type="text" class="secret-input" id="secretInput">
+    <!-- Stage 6: Screen "Break" -->
+    <div class="stage" id="breakStage">
+        <div style="text-align: center; position: relative;">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem; color: var(--error);">OOPS! 💥</h2>
+            <p style="font-size: 1.5rem; margin-bottom: 2rem;">You broke the screen! 😱</p>
+            <div style="font-size: 8rem; margin: 2rem 0;">📱💥</div>
+            <p style="margin-bottom: 2rem; opacity: 0.8;">Don't worry, it's not real... OR IS IT?! 😈</p>
+            <p style="font-size: 0.9rem; opacity: 0.6; margin-bottom: 2rem;">Repair cost: $999,999.99</p>
+            <button class="start-btn" onclick="nextStage()">Fix Screen 🔧</button>
+        </div>
+    </div>
 
-    <!-- Screen crack overlay -->
-    <div class="crack-overlay" id="crackOverlay"></div>
+    <!-- Stage 7: Real Birthday Wishes -->
+    <div class="stage" id="finalStage">
+        <div class="celebration">
+            <h1>🎉 SURPRISE! 🎉</h1>
+            <div class="gift-box" onclick="explodeConfetti()">🎁</div>
+            <div class="birthday-message">
+                <p style="font-size: 1.5rem; margin-bottom: 2rem;">
+                    <strong>GOTCHA!</strong> 😂
+                </p>
+                <p style="margin-bottom: 1.5rem;">
+                    Hope you enjoyed our little birthday prank! Don't worry - nothing was actually hacked, 
+                    posted, or broken. We just wanted to give you some laughs on your special day!
+                </p>
+                <p style="margin-bottom: 1.5rem;">
+                    🎂 <strong>Now for the REAL birthday wishes:</strong> 🎂
+                </p>
+                <p style="margin-bottom: 1.5rem; font-style: italic; color: var(--primary);">
+                    May your year ahead be filled with joy, laughter, amazing adventures, and way fewer 
+                    fake system errors than you experienced today! 
+                </p>
+                <p style="margin-bottom: 1.5rem;">
+                    You're another year older, another year wiser, and definitely braver for surviving 
+                    our birthday prank gauntlet! 🏆
+                </p>
+                <p style="font-size: 1.3rem; font-weight: bold; color: var(--secondary);">
+                    HAPPY BIRTHDAY! 🎈🎊🎉
+                </p>
+                <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
+                    Click the gift above for a confetti surprise! 🎁✨
+                </p>
+            </div>
+            <button class="start-btn" onclick="restartPrank()" style="margin-top: 2rem;">
+                Prank Someone Else! 😈
+            </button>
+        </div>
+    </div>
+
+    <!-- Fake UI Elements -->
+    <div class="webcam-indicator" id="webcamIndicator">
+        <div class="rec-dot"></div>
+        Recording...
+    </div>
+
+    <div class="browser-hijack" id="browserHijack">
+        <span>🔒</span>
+        <div class="address-bar">https://definitely-not-a-scam-birthday-site.com/your-data-here</div>
+        <span>😈</span>
+    </div>
+
+    <div class="system-notification" id="systemNotification">
+        <div class="notification-header">
+            📱 System Alert
+        </div>
+        <div>Your birthday photos are being uploaded to "MyEmbarrassingMoments.com"</div>
+    </div>
 
     <script>
-        // Global variables
-        let currentStage = 'welcome';
+        let currentStage = 'loading';
+        let stageOrder = ['welcome', 'blow', 'error', 'hack', 'call', 'typing', 'break', 'final'];
+        let currentStageIndex = 0;
+        let candlesBlown = 0;
+        let hackingTextIndex = 0;
+        let confettiCanvas, confettiCtx;
         let particles = [];
-        let audioContext;
-        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        let cameraStream = null;
-        let capturedPhotos = [];
-        let photoInterval = null;
-        let cameraAllowed = false;
-        
-        // Stage names for photo captions
-        const stageNames = {
-            'welcome': 'First Impression',
-            'blow': 'Making a Wish',
-            'glitch': 'When Things Got Weird',
-            'popup': 'Sugar Overload Alert',
-            'ar': 'Portal Discovery',
-            'dodge': 'The Great Cake Chase',
-            'ending': 'Mission Complete'
-        };
-        
-        // Particle system
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+
+        // Initialize app
+        window.addEventListener('load', () => {
+            setupCursor();
+            setupConfetti();
+            setTimeout(showWelcome, 3500);
+            
+            // Set up start button immediately
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Start button clicked!'); // Debug log
+                    nextStage();
+                });
+                
+                // Also add touch event for mobile
+                startBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    console.log('Start button touched!'); // Debug log
+                    nextStage();
+                });
+            }
+        });
+
+        function setupCursor() {
+            const cursor = document.getElementById('customCursor');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = (e.clientX - 10) + 'px';
+                cursor.style.top = (e.clientY - 10) + 'px';
+            });
+
+            document.addEventListener('mousedown', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursor.style.background = 'radial-gradient(circle, var(--secondary), transparent)';
+            });
+
+            document.addEventListener('mouseup', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.background = 'radial-gradient(circle, var(--primary), transparent)';
+            });
         }
-        
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-        
-        class Particle {
-            constructor(x, y, color) {
+
+        function setupConfetti() {
+            confettiCanvas = document.getElementById('confettiCanvas');
+            confettiCtx = confettiCanvas.getContext('2d');
+            
+            function resizeCanvas() {
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            animateConfetti();
+        }
+
+        function showWelcome() {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('welcomeScreen').classList.add('active');
+                currentStage = 'welcome'; // Make sure stage is set
+            }, 1000);
+        }
+
+        // Function for inline onclick
+        function startPrank() {
+            console.log('startPrank called!');
+            
+            // Visual feedback
+            const btn = document.getElementById('startBtn');
+            btn.style.transform = 'scale(0.95)';
+            btn.style.background = 'linear-gradient(45deg, var(--secondary), var(--primary))';
+            btn.innerHTML = 'Starting... 🚀';
+            
+            setTimeout(() => {
+                nextStage();
+            }, 300);
+        }
+
+        function nextStage() {
+            console.log('nextStage called, current stage:', currentStage, 'index:', currentStageIndex);
+            
+            currentStageIndex++;
+            if (currentStageIndex >= stageOrder.length) {
+                console.log('Reached end of stages');
+                return;
+            }
+            
+            currentStage = stageOrder[currentStageIndex];
+            console.log('Moving to stage:', currentStage);
+            showStage(currentStage);
+        }
+
+        function showStage(stageName) {
+            console.log('showStage called with:', stageName);
+            
+            // Hide all stages
+            document.querySelectorAll('.stage, .welcome-screen').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show target stage
+            const targetId = stageName === 'welcome' ? 'welcomeScreen' : stageName + 'Stage';
+            const target = document.getElementById(targetId);
+            
+            console.log('Looking for element with ID:', targetId, 'Found:', !!target);
+            
+            if (target) {
+                setTimeout(() => {
+                    target.classList.add('active');
+                    console.log('Stage activated:', targetId);
+                    onStageEnter(stageName);
+                }, 100);
+            } else {
+                console.error('Target stage not found:', targetId);
+            }
+        }
+
+        function onStageEnter(stageName) {
+            switch (stageName) {
+                case 'blow':
+                    initCandleBlow();
+                    break;
+                case 'error':
+                    setTimeout(() => {
+                        document.body.classList.add('cursor-disabled');
+                        document.getElementById('screenCrack').classList.add('active');
+                    }, 2000);
+                    break;
+                case 'hack':
+                    startHackingSequence();
+                    break;
+                case 'call':
+                    playRingingSound();
+                    break;
+                case 'typing':
+                    startAutoTyping();
+                    break;
+                case 'break':
+                    document.getElementById('screenCrack').classList.add('active');
+                    document.getElementById('glitchScreen').classList.add('active');
+                    setTimeout(() => {
+                        document.getElementById('glitchScreen').classList.remove('active');
+                    }, 3000);
+                    break;
+                case 'final':
+                    document.getElementById('screenCrack').classList.remove('active');
+                    document.body.classList.remove('cursor-disabled');
+                    break;
+            }
+        }
+
+        function initCandleBlow() {
+            const candles = document.querySelectorAll('#interactiveCandles .candle');
+            
+            candles.forEach((candle, index) => {
+                candle.addEventListener('click', () => {
+                    if (candle.dataset.blown) return;
+                    
+                    const flame = candle.querySelector('.flame');
+                    flame.style.opacity = '0';
+                    flame.style.transform = 'translateX(-50%) scale(0)';
+                    candle.dataset.blown = 'true';
+                    
+                    candlesBlown++;
+                    document.getElementById('candleCount').textContent = 3 - candlesBlown;
+                    
+                    if (candlesBlown >= 3) {
+                        setTimeout(() => {
+                            showFakeAlert();
+                        }, 1500);
+                    }
+                });
+            });
+        }
+
+        function showFakeAlert() {
+            // Show fake webcam indicator
+            document.getElementById('webcamIndicator').classList.add('active');
+            
+            // Show fake browser hijack
+            setTimeout(() => {
+                document.getElementById('browserHijack').classList.add('active');
+            }, 1000);
+            
+            // Show system notification
+            setTimeout(() => {
+                document.getElementById('systemNotification').classList.add('active');
+            }, 2000);
+            
+            setTimeout(() => nextStage(), 3000);
+        }
+
+        function startHackingSequence() {
+            const lines = document.querySelectorAll('#hackingText .terminal-line');
+            
+            lines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.style.animationDelay = '0s';
+                    line.style.opacity = '1';
+                    
+                    // Add typing sound effect
+                    if (index < lines.length - 1) {
+                        playTypingSound();
+                    }
+                    
+                    // Auto advance after last line
+                    if (index === lines.length - 1) {
+                        setTimeout(() => nextStage(), 3000);
+                    }
+                }, index * 800);
+            });
+        }
+
+        function startAutoTyping() {
+            const textarea = document.getElementById('autoTypeArea');
+            const embarrassingMessages = [
+                "I still sleep with a teddy bear and I'm not ashamed! 🧸",
+                "Just realized I've been singing the wrong lyrics to my favorite song for 10 years... 🎵",
+                "I talk to my plants and give them names. Today I scolded Gerald the fern for looking droopy. 🌱",
+                "I just spent 20 minutes arguing with a chatbot thinking it was customer service... 🤖",
+                "My idea of meal prep is having cereal for all three meals. Living my best life! 🥣"
+            ];
+            
+            let messageIndex = 0;
+            let charIndex = 0;
+            
+            function typeMessage() {
+                if (messageIndex < embarrassingMessages.length) {
+                    const currentMessage = embarrassingMessages[messageIndex];
+                    
+                    if (charIndex < currentMessage.length) {
+                        textarea.value += currentMessage[charIndex];
+                        charIndex++;
+                        setTimeout(typeMessage, 50);
+                    } else {
+                        textarea.value += '\n\n';
+                        messageIndex++;
+                        charIndex = 0;
+                        setTimeout(typeMessage, 1000);
+                    }
+                } else {
+                    setTimeout(() => nextStage(), 2000);
+                }
+            }
+            
+            typeMessage();
+        }
+
+        function playRingingSound() {
+            // Create audio context for sound effects
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playTypingSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.05);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Confetti system
+        class ConfettiParticle {
+            constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.vx = (Math.random() - 0.5) * 5;
-                this.vy = (Math.random() - 0.5) * 5 - 2;
+                this.vx = (Math.random() - 0.5) * 10;
+                this.vy = Math.random() * -15 - 5;
+                this.gravity = 0.3;
                 this.life = 1;
-                this.color = color || `hsl(${Math.random() * 60 + 15}, 100%, 50%)`;
-                this.size = Math.random() * 5 + 2;
+                this.decay = Math.random() * 0.02 + 0.01;
+                this.size = Math.random() * 8 + 4;
+                this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
             }
             
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                this.vy += 0.1;
-                this.life -= 0.01;
-                this.size *= 0.99;
+                this.vy += this.gravity;
+                this.life -= this.decay;
             }
             
             draw() {
-                ctx.save();
-                ctx.globalAlpha = this.life;
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.size, this.size);
-                ctx.restore();
+                confettiCtx.save();
+                confettiCtx.globalAlpha = this.life;
+                confettiCtx.fillStyle = this.color;
+                confettiCtx.fillRect(this.x, this.y, this.size, this.size);
+                confettiCtx.restore();
             }
         }
-        
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
             
             particles = particles.filter(p => p.life > 0);
             particles.forEach(p => {
@@ -1165,849 +1267,104 @@
                 p.draw();
             });
             
-            requestAnimationFrame(animateParticles);
+            requestAnimationFrame(animateConfetti);
         }
-        animateParticles();
-        
-        // Audio functions
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-        
-        function playTone(frequency, duration, type = 'sine') {
-            initAudio();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+
+        function explodeConfetti() {
+            const centerX = confettiCanvas.width / 2;
+            const centerY = confettiCanvas.height / 2;
             
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.type = type;
-            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
-        }
-        
-        function playGlitchSound() {
-            initAudio();
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    playTone(Math.random() * 800 + 200, 0.1, 'square');
-                }, i * 50);
-            }
-        }
-        
-        function playConfetti() {
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    particles.push(new Particle(
-                        Math.random() * canvas.width,
-                        canvas.height,
-                        `hsl(${Math.random() * 360}, 100%, 50%)`
-                    ));
-                }, i * 20);
+            for (let i = 0; i < 100; i++) {
+                particles.push(new ConfettiParticle(
+                    centerX + (Math.random() - 0.5) * 100,
+                    centerY + (Math.random() - 0.5) * 100
+                ));
             }
             
-            // Play ascending tones
-            const notes = [261.63, 329.63, 392.00, 523.25];
-            notes.forEach((note, i) => {
-                setTimeout(() => playTone(note, 0.3), i * 100);
-            });
+            // Play celebration sound
+            playTypingSound();
         }
-        
-        // Camera functions
-        async function requestCameraPermission() {
-            try {
-                const video = document.getElementById('hiddenVideo');
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'user',
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    } 
-                });
-                
-                video.srcObject = stream;
-                cameraStream = stream;
-                cameraAllowed = true;
-                
-                // Hide permission screen
-                document.getElementById('cameraPermission').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('cameraPermission').style.display = 'none';
-                    startPhotoCapture();
-                    showToast('📸 Camera ready! Capturing your journey...');
-                }, 500);
-                
-            } catch (err) {
-                console.error('Camera permission denied:', err);
-                skipCamera();
-            }
-        }
-        
-        function skipCamera() {
-            document.getElementById('cameraPermission').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('cameraPermission').style.display = 'none';
-            }, 500);
-        }
-        
-        function startPhotoCapture() {
-            if (!cameraAllowed) return;
+
+        function restartPrank() {
+            // Reset everything
+            currentStageIndex = 0;
+            candlesBlown = 0;
             
-            document.getElementById('captureIndicator').classList.add('active');
+            // Hide all fake UI
+            document.getElementById('webcamIndicator').classList.remove('active');
+            document.getElementById('browserHijack').classList.remove('active');
+            document.getElementById('systemNotification').classList.remove('active');
+            document.getElementById('screenCrack').classList.remove('active');
+            document.body.classList.remove('cursor-disabled');
             
-            // Capture photo every 5 seconds
-            photoInterval = setInterval(() => {
-                capturePhoto();
-            }, 5000);
-            
-            // Also capture immediately
-            setTimeout(() => capturePhoto(), 1000);
-        }
-        
-        function capturePhoto() {
-            if (!cameraStream || !cameraAllowed) return;
-            
-            const video = document.getElementById('hiddenVideo');
-            const canvas = document.getElementById('captureCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            ctx.drawImage(video, 0, 0);
-            
-            // Flash effect
-            const flash = document.getElementById('cameraFlash');
-            flash.classList.add('active');
-            setTimeout(() => flash.classList.remove('active'), 300);
-            
-            // Play camera sound
-            playTone(880, 0.1);
-            
-            // Save photo data
-            canvas.toBlob((blob) => {
-                const url = URL.createObjectURL(blob);
-                const photo = {
-                    url: url,
-                    stage: currentStage,
-                    caption: stageNames[currentStage] || 'Birthday Moment',
-                    timestamp: Date.now()
-                };
-                
-                capturedPhotos.push(photo);
-                
-                // Add to timeline
-                addToTimeline(photo);
-                
-                // Apply face filter effect occasionally
-                if (Math.random() > 0.7 && currentStage !== 'welcome') {
-                    applyFaceFilter();
-                }
-            }, 'image/jpeg', 0.8);
-        }
-        
-        function addToTimeline(photo) {
-            const timeline = document.getElementById('photoTimeline');
-            const photoEl = document.createElement('div');
-            photoEl.className = 'timeline-photo';
-            photoEl.innerHTML = `<img src="${photo.url}" alt="${photo.caption}">`;
-            timeline.appendChild(photoEl);
-            
-            // Remove old photos if too many
-            if (timeline.children.length > 4) {
-                timeline.removeChild(timeline.firstChild);
-            }
-        }
-        
-        function applyFaceFilter() {
-            const filter = document.getElementById('faceFilter');
-            
-            // Add cake splatter at random position
-            const splatter = document.createElement('div');
-            splatter.className = 'cake-splatter';
-            splatter.style.left = Math.random() * 80 + 10 + '%';
-            splatter.style.top = Math.random() * 80 + 10 + '%';
-            
-            filter.appendChild(splatter);
-            
-            // Remove after animation
-            setTimeout(() => splatter.remove(), 2000);
-        }
-        
-        // AR Mode
-        async function startARMode() {
-            if (!cameraAllowed) {
-                showToast('📸 Camera access needed for AR mode!');
-                currentStage = 'dodge';
-                showStage('dodgeStage');
-                initDodgeGame();
-                return;
-            }
-            
-            const arViewfinder = document.getElementById('arViewfinder');
-            const arVideo = document.getElementById('arVideo');
-            
-            arVideo.srcObject = cameraStream;
-            arViewfinder.classList.add('active');
-            
-            // Animate AR cake
-            const arCake = document.getElementById('arCake');
-            let cakeX = 50;
-            let cakeY = 50;
-            
-            const moveARCake = () => {
-                cakeX = 20 + Math.random() * 60;
-                cakeY = 20 + Math.random() * 60;
-                
-                arCake.style.left = cakeX + '%';
-                arCake.style.top = cakeY + '%';
-                
-                playTone(440 + Math.random() * 200, 0.1);
-            };
-            
-            moveARCake();
-            const arInterval = setInterval(moveARCake, 2000);
-            
-            // Click to catch the AR cake
-            let arTaps = 0;
-            arCake.addEventListener('click', () => {
-                arTaps++;
-                moveARCake();
-                
-                // Create AR particles
-                for (let i = 0; i < 20; i++) {
-                    particles.push(new Particle(
-                        window.innerWidth * cakeX / 100,
-                        window.innerHeight * cakeY / 100
-                    ));
-                }
-                
-                if (arTaps >= 5) {
-                    clearInterval(arInterval);
-                    arViewfinder.classList.remove('active');
-                    currentStage = 'dodge';
-                    showStage('dodgeStage');
-                    initDodgeGame();
-                }
+            // Reset candles
+            document.querySelectorAll('#interactiveCandles .candle').forEach(candle => {
+                delete candle.dataset.blown;
+                const flame = candle.querySelector('.flame');
+                flame.style.opacity = '1';
+                flame.style.transform = 'translateX(-50%) scale(1)';
             });
             
-            // Auto-progress after 15 seconds
-            setTimeout(() => {
-                if (arViewfinder.classList.contains('active')) {
-                    clearInterval(arInterval);
-                    arViewfinder.classList.remove('active');
-                    currentStage = 'dodge';
-                    showStage('dodgeStage');
-                    initDodgeGame();
-                }
-            }, 15000);
+            document.getElementById('candleCount').textContent = '3';
+            document.getElementById('autoTypeArea').value = '';
+            
+            // Show welcome
+            showStage('welcome');
         }
-        
-        // Collage functions
-        function showCollage() {
-            if (photoInterval) {
-                clearInterval(photoInterval);
-            }
-            
-            const collageGrid = document.getElementById('collageGrid');
-            collageGrid.innerHTML = '';
-            
-            // Add all captured photos
-            capturedPhotos.forEach((photo, index) => {
-                const photoEl = document.createElement('div');
-                photoEl.className = 'collage-photo';
-                photoEl.style.animationDelay = index * 0.1 + 's';
-                photoEl.innerHTML = `
-                    <img src="${photo.url}" alt="${photo.caption}">
-                    <div class="collage-caption">${photo.caption}</div>
-                `;
-                collageGrid.appendChild(photoEl);
-            });
-            
-            // If no photos, add placeholder
-            if (capturedPhotos.length === 0) {
-                collageGrid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; opacity: 0.6;">
-                        <p style="font-size: 3rem; margin-bottom: 1rem;">📸</p>
-                        <p>No photos captured this time!</p>
-                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Allow camera access next time for the full experience</p>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('collageScreen').classList.add('active');
-            playConfetti();
-        }
-        
-        async function downloadCollage() {
-            // Create a canvas to combine all photos
-            const collageCanvas = document.createElement('canvas');
-            const ctx = collageCanvas.getContext('2d');
-            
-            const cols = Math.ceil(Math.sqrt(capturedPhotos.length));
-            const rows = Math.ceil(capturedPhotos.length / cols);
-            const photoSize = 300;
-            
-            collageCanvas.width = cols * photoSize;
-            collageCanvas.height = rows * photoSize;
-            
-            // Draw background
-            ctx.fillStyle = '#1a1a2e';
-            ctx.fillRect(0, 0, collageCanvas.width, collageCanvas.height);
-            
-            // Draw each photo
-            for (let i = 0; i < capturedPhotos.length; i++) {
-                const col = i % cols;
-                const row = Math.floor(i / cols);
-                
-                const img = new Image();
-                img.src = capturedPhotos[i].url;
-                
-                await new Promise(resolve => {
-                    img.onload = () => {
-                        ctx.drawImage(img, col * photoSize, row * photoSize, photoSize, photoSize);
-                        
-                        // Add caption
-                        ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                        ctx.fillRect(col * photoSize, (row + 1) * photoSize - 40, photoSize, 40);
-                        
-                        ctx.fillStyle = 'white';
-                        ctx.font = '16px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.fillText(capturedPhotos[i].caption, (col + 0.5) * photoSize, (row + 1) * photoSize - 15);
-                        
-                        resolve();
-                    };
-                });
-            }
-            
-            // Add title
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 48px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('My Birthday Journey 🎂', collageCanvas.width / 2, 50);
-            
-            // Download
-            collageCanvas.toBlob((blob) => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'birthday-journey.jpg';
-                a.click();
-                URL.revokeObjectURL(url);
-            }, 'image/jpeg', 0.9);
-            
-            showToast('📸 Downloading your birthday memories!');
-        }
-        
-        async function shareCollage() {
-            if (navigator.share && capturedPhotos.length > 0) {
-                try {
-                    const files = [];
-                    
-                    // Convert first few photos to files
-                    for (let i = 0; i < Math.min(capturedPhotos.length, 3); i++) {
-                        const response = await fetch(capturedPhotos[i].url);
-                        const blob = await response.blob();
-                        const file = new File([blob], `birthday-moment-${i + 1}.jpg`, { type: 'image/jpeg' });
-                        files.push(file);
-                    }
-                    
-                    await navigator.share({
-                        title: 'My Birthday Journey! 🎂',
-                        text: 'Check out my chaotic birthday celebration! Made with BirthdayBlast 🎉',
-                        files: files
-                    });
-                } catch (err) {
-                    console.error('Share failed:', err);
-                    showToast('📋 Share link copied to clipboard!');
-                }
-            } else {
-                // Fallback: copy link
-                const text = 'Check out my birthday journey! 🎂✨ #BirthdayBlast';
-                navigator.clipboard.writeText(text);
-                showToast('📋 Message copied to clipboard!');
-            }
-        }
-        
-        // Stage management
-        function showStage(stageId) {
-            document.querySelectorAll('.stage').forEach(stage => {
-                stage.classList.remove('active');
-            });
-            
-            const stage = document.getElementById(stageId);
-            if (stage) {
-                stage.classList.add('active');
-            }
-            
-            // Capture photo when entering new stage
-            if (cameraAllowed && currentStage !== 'welcome') {
-                setTimeout(() => capturePhoto(), 500);
-            }
-        }
-        
-        // Initialize
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    
-                    // Show camera permission screen
-                    document.getElementById('cameraPermission').classList.add('active');
-                    
-                    // After 3 seconds, if no response, auto-skip
-                    setTimeout(() => {
-                        if (document.getElementById('cameraPermission').classList.contains('active')) {
-                            skipCamera();
-                        }
-                        document.getElementById('welcomeScreen').style.display = 'flex';
-                    }, 5000);
-                }, 800);
-            }, 2000);
-        });
-        
-        // Welcome screen interactions
+
+        // Cake interaction in welcome
         document.getElementById('cakeContainer').addEventListener('click', () => {
-            playTone(440, 0.2);
-            document.getElementById('cakeContainer').style.transform = 'scale(1.1)';
+            const cake = document.getElementById('cakeContainer');
+            cake.style.transform = 'scale(1.1) rotate(5deg)';
             setTimeout(() => {
-                document.getElementById('cakeContainer').style.transform = 'scale(1)';
+                cake.style.transform = 'scale(1) rotate(0deg)';
             }, 200);
-        });
-        
-        document.getElementById('startBtn').addEventListener('click', () => {
-            currentStage = 'blow';
-            document.getElementById('welcomeScreen').style.display = 'none';
-            showStage('blowStage');
-            playTone(523.25, 0.3);
-        });
-        
-        // Blow candles stage
-        let blowing = false;
-        let blowPower = 0;
-        let blowInterval;
-        
-        function startBlowing() {
-            if (!blowing) {
-                blowing = true;
-                blowInterval = setInterval(() => {
-                    if (blowPower < 100) {
-                        blowPower += 5;
-                        document.getElementById('blowFill').style.width = blowPower + '%';
-                        
-                        if (blowPower >= 100) {
-                            blowCandles();
-                        }
-                    }
-                }, 100);
-            }
-        }
-        
-        function stopBlowing() {
-            blowing = false;
-            if (blowInterval) clearInterval(blowInterval);
             
-            // Slowly decrease blow power
-            const decreaseInterval = setInterval(() => {
-                if (blowPower > 0) {
-                    blowPower -= 2;
-                    document.getElementById('blowFill').style.width = blowPower + '%';
-                } else {
-                    clearInterval(decreaseInterval);
-                }
-            }, 50);
-        }
-        
-        // Touch events for mobile
-        document.getElementById('blowStage').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            startBlowing();
+            // Create some particles
+            for (let i = 0; i < 10; i++) {
+                particles.push(new ConfettiParticle(
+                    window.innerWidth / 2 + (Math.random() - 0.5) * 100,
+                    window.innerHeight / 2 + (Math.random() - 0.5) * 100
+                ));
+            }
         });
-        
-        document.getElementById('blowStage').addEventListener('touchend', (e) => {
-            e.preventDefault();
-            stopBlowing();
+
+        // Alternative start method - double click anywhere on welcome screen
+        document.getElementById('welcomeScreen').addEventListener('dblclick', () => {
+            console.log('Double click detected - starting prank!');
+            nextStage();
         });
-        
-        // Keyboard events for desktop
+
+        // Keyboard shortcut as backup
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && currentStage === 'blow') {
+            if (e.code === 'Space' && currentStage === 'welcome') {
                 e.preventDefault();
-                startBlowing();
+                console.log('Spacebar pressed - starting prank!');
+                nextStage();
             }
         });
-        
-        document.addEventListener('keyup', (e) => {
-            if (e.code === 'Space' && currentStage === 'blow') {
-                e.preventDefault();
-                stopBlowing();
-            }
-        });
-        
-        function blowCandles() {
-            // Animate candles disappearing
-            const flames = document.querySelectorAll('#candlesStage .flame');
-            flames.forEach((flame, i) => {
-                setTimeout(() => {
-                    flame.style.opacity = '0';
-                    flame.style.transform = 'translateX(-50%) scale(0)';
-                    
-                    // Create smoke particles
-                    const rect = flame.getBoundingClientRect();
-                    for (let j = 0; j < 10; j++) {
-                        particles.push(new Particle(rect.left + rect.width/2, rect.top, '#888'));
-                    }
-                }, i * 200);
-            });
-            
-            setTimeout(() => {
-                // Explosion effect
-                playGlitchSound();
-                document.body.classList.add('glitch');
-                
-                setTimeout(() => {
-                    currentStage = 'glitch';
-                    showStage('glitchStage');
-                    glitchSequence();
-                }, 500);
-            }, 1000);
-        }
-        
-        function glitchSequence() {
-            // Play distorted birthday song
-            const notes = [262, 262, 294, 262, 349, 330];
-            let noteIndex = 0;
-            
-            const playDistorted = setInterval(() => {
-                if (noteIndex < notes.length) {
-                    playTone(notes[noteIndex] * (1 + Math.random() * 0.2 - 0.1), 0.5, 'sawtooth');
-                    noteIndex++;
-                } else {
-                    clearInterval(playDistorted);
-                    
-                    setTimeout(() => {
-                        currentStage = 'popup';
-                        showStage('popupStage');
-                        document.getElementById('crackOverlay').classList.add('active');
-                        playGlitchSound();
-                    }, 1000);
-                }
-            }, 300);
-        }
-        
-        function nextStage() {
-            document.getElementById('crackOverlay').classList.remove('active');
-            
-            if (currentStage === 'popup') {
-                currentStage = 'ar';
-                showStage('arStage');
-            } else if (currentStage === 'dodge') {
-                currentStage = 'ending';
-                showStage('endingStage');
-                playConfetti();
-                
-                // Stop photo capture
-                if (photoInterval) {
-                    clearInterval(photoInterval);
-                    document.getElementById('captureIndicator').classList.remove('active');
-                }
-            }
-        }
-        
-        // Dodging cake game
-        let tapCount = 0;
-        let dodgeTimeout;
-        
-        function initDodgeGame() {
-            const dodgingCake = document.getElementById('dodgingCake');
-            const gameArea = document.getElementById('dodgeGame');
-            
-            // Position cake randomly
-            function moveCake() {
-                const maxX = gameArea.clientWidth - 100;
-                const maxY = gameArea.clientHeight - 100;
-                
-                const x = Math.random() * maxX;
-                const y = Math.random() * maxY;
-                
-                dodgingCake.style.left = x + 'px';
-                dodgingCake.style.top = y + 'px';
-                
-                playTone(220 + Math.random() * 200, 0.1);
+
+        // Easter egg: Konami code
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
             }
             
-            moveCake();
-            
-            // Make cake dodge cursor/touch
-            gameArea.addEventListener('mousemove', (e) => {
-                const rect = gameArea.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                
-                const cakeX = parseFloat(dodgingCake.style.left) + 50;
-                const cakeY = parseFloat(dodgingCake.style.top) + 50;
-                
-                const distance = Math.sqrt(Math.pow(mouseX - cakeX, 2) + Math.pow(mouseY - cakeY, 2));
-                
-                if (distance < 150) {
-                    clearTimeout(dodgeTimeout);
-                    dodgeTimeout = setTimeout(moveCake, 100);
-                }
-            });
-            
-            dodgingCake.addEventListener('click', () => {
-                tapCount++;
-                document.getElementById('tapCount').textContent = tapCount;
-                moveCake();
-                
-                // Add particle effect
-                const rect = dodgingCake.getBoundingClientRect();
-                for (let i = 0; i < 10; i++) {
-                    particles.push(new Particle(
-                        rect.left + rect.width/2,
-                        rect.top + rect.height/2
+            if (konamiCode.join(',') === konamiSequence.join(',')) {
+                // Secret instant confetti
+                for (let i = 0; i < 200; i++) {
+                    particles.push(new ConfettiParticle(
+                        Math.random() * confettiCanvas.width,
+                        Math.random() * confettiCanvas.height
                     ));
                 }
-                
-                if (tapCount >= 10) {
-                    setTimeout(() => nextStage(), 500);
-                }
-            });
-            
-            // Auto-move cake periodically
-            setInterval(() => {
-                if (currentStage === 'dodge') {
-                    moveCake();
-                }
-            }, 3000);
-        }
-        
-        // Voice recognition for Boss Mode
-        let recognition;
-        let voiceListening = false;
-        
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            
-            recognition.onresult = (event) => {
-                const transcript = Array.from(event.results)
-                    .map(result => result[0].transcript)
-                    .join('')
-                    .toLowerCase();
-                
-                if (transcript.includes('priyanshi')) {
-                    activateBossMode();
-                }
-            };
-            
-            recognition.onerror = () => {
-                voiceListening = false;
-                document.getElementById('voiceBtn').classList.remove('listening');
-            };
-        }
-        
-        document.getElementById('voiceBtn').addEventListener('click', () => {
-            if (!voiceListening && recognition) {
-                recognition.start();
-                voiceListening = true;
-                document.getElementById('voiceBtn').classList.add('listening');
-                
-                // Show hint after 2 seconds
-                setTimeout(() => {
-                    if (voiceListening) {
-                        showToast('💡 Try saying the developer\'s name!');
-                    }
-                }, 2000);
-            } else if (voiceListening && recognition) {
-                recognition.stop();
-                voiceListening = false;
-                document.getElementById('voiceBtn').classList.remove('listening');
+                konamiCode = [];
             }
         });
-        
-        // Keyboard easter egg listener
-        let keySequence = '';
-        document.addEventListener('keypress', (e) => {
-            keySequence += e.key.toLowerCase();
-            if (keySequence.includes('priyanshi')) {
-                activateBossMode();
-                keySequence = '';
-            }
-            
-            // Reset sequence if too long
-            if (keySequence.length > 20) {
-                keySequence = keySequence.slice(-10);
-            }
-        });
-        
-        // Touch gesture for mobile easter egg
-        let touchSequence = [];
-        let lastTouchTime = 0;
-        
-        document.addEventListener('touchstart', (e) => {
-            const now = Date.now();
-            
-            if (now - lastTouchTime < 500) { // Within 500ms
-                touchSequence.push({
-                    x: e.touches[0].clientX,
-                    y: e.touches[0].clientY,
-                    time: now
-                });
-                
-                // Check for pattern (e.g., 5 quick taps)
-                if (touchSequence.length >= 5) {
-                    const recentTouches = touchSequence.slice(-5);
-                    const timeDiff = recentTouches[4].time - recentTouches[0].time;
-                    
-                    if (timeDiff < 2000) { // 5 taps within 2 seconds
-                        // Show secret input
-                        const input = document.getElementById('secretInput');
-                        input.style.bottom = '20px';
-                        input.style.opacity = '1';
-                        input.style.pointerEvents = 'auto';
-                        input.focus();
-                        
-                        input.addEventListener('input', (e) => {
-                            if (e.target.value.toLowerCase().includes('priyanshi')) {
-                                activateBossMode();
-                                input.style.bottom = '-100px';
-                                input.style.opacity = '0';
-                                input.style.pointerEvents = 'none';
-                            }
-                        });
-                        
-                        // Hide after 10 seconds
-                        setTimeout(() => {
-                            input.style.bottom = '-100px';
-                            input.style.opacity = '0';
-                            input.style.pointerEvents = 'none';
-                        }, 10000);
-                    }
-                    
-                    touchSequence = [];
-                }
-            } else {
-                touchSequence = [{
-                    x: e.touches[0].clientX,
-                    y: e.touches[0].clientY,
-                    time: now
-                }];
-            }
-            
-            lastTouchTime = now;
-        });
-        
-        function activateBossMode() {
-            const bossMode = document.getElementById('bossMode');
-            bossMode.classList.add('active');
-            
-            // Epic entrance
-            playConfetti();
-            
-            // Play victory fanfare
-            const fanfare = [523.25, 659.25, 783.99, 1046.50];
-            fanfare.forEach((note, i) => {
-                setTimeout(() => playTone(note, 0.5, 'square'), i * 200);
-            });
-            
-            // Rain confetti continuously
-            const confettiInterval = setInterval(() => {
-                for (let i = 0; i < 5; i++) {
-                    particles.push(new Particle(
-                        Math.random() * canvas.width,
-                        -10,
-                        `hsl(${Math.random() * 360}, 100%, 50%)`
-                    ));
-                }
-            }, 100);
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                bossMode.classList.remove('active');
-                clearInterval(confettiInterval);
-            }, 5000);
-        }
-        
-        // Toast notification helper
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 100px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(0,0,0,0.8);
-                color: white;
-                padding: 1rem 2rem;
-                border-radius: 50px;
-                z-index: 10000;
-                animation: fadeInUp 0.5s ease;
-            `;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.animation = 'fadeOutDown 0.5s ease';
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-        }
-        
-        // Device shake detection for mobile
-        if (window.DeviceMotionEvent && isMobile) {
-            let shakeCount = 0;
-            let lastShake = 0;
-            
-            window.addEventListener('devicemotion', (e) => {
-                const acceleration = e.accelerationIncludingGravity;
-                const shake = Math.abs(acceleration.x) + Math.abs(acceleration.y) + Math.abs(acceleration.z);
-                
-                if (shake > 30) {
-                    const now = Date.now();
-                    if (now - lastShake > 500) {
-                        shakeCount++;
-                        lastShake = now;
-                        
-                        if (shakeCount >= 3) {
-                            showToast('🎉 Shake detected! Keep going!');
-                            document.body.style.animation = 'shake 0.5s ease-in-out';
-                            setTimeout(() => {
-                                document.body.style.animation = '';
-                            }, 500);
-                            
-                            if (shakeCount >= 5) {
-                                activateBossMode();
-                                shakeCount = 0;
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Add CSS animations that weren't defined
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeOutDown {
-                to {
-                    opacity: 0;
-                    transform: translate(-50%, 20px);
-                }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
